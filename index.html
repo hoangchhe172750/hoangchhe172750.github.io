@@ -224,63 +224,68 @@
         document.addEventListener('DOMContentLoaded', function() {
             const questions = [
                 {
-                    question: "Thủ đô của Việt Nam là gì?",
-                    options: ["Hồ Chí Minh", "Hà Nội", "Đà Nẵng", "Huế"],
-                    answer: "B"
-                },
-                {
-                    question: "1 + 1 = ?",
-                    options: ["1", "2", "3", "4"],
-                    answer: "B"
-                },
-                {
-                    question: "Nước nào có diện tích lớn nhất thế giới?",
-                    options: ["Mỹ", "Trung Quốc", "Nga", "Canada"],
-                    answer: "C"
-                },
-                {
-                    question: "Hành tinh nào gần Mặt Trời nhất?",
-                    options: ["Trái Đất", "Sao Thủy", "Sao Kim", "Sao Hỏa"],
-                    answer: "B"
-                },
-                {
-                    question: "Ai là tác giả của 'Truyện Kiều'?",
-                    options: ["Nguyễn Du", "Hồ Xuân Hương", "Nguyễn Trãi", "Nguyễn Đình Chiểu"],
+                    question: "Theo chủ tịch hồ chí minh , Đảng ta là một đảng cầm quyền , mỗi đảng viên và cán bộ phải thật sự thấm nhuần đạo đức gì ?",
+                    options: ["Đạo đức cách mạng", "Đạo đức tập thể", "Đạo đức cá nhân", "Đạo đức cán bộ"],
                     answer: "A"
                 },
                 {
-                    question: "Năm bao nhiêu Việt Nam giành độc lập?",
-                    options: ["1945", "1954", "1975", "1986"],
-                    answer: "A"
-                },
-                {
-                    question: "Đâu không phải là một loại trái cây?",
-                    options: ["Táo", "Cà rốt", "Cam", "Dưa hấu"],
-                    answer: "B"
-                },
-                {
-                    question: "Đâu là số nguyên tố?",
-                    options: ["4", "6", "9", "11"],
-                    answer: "D"
-                },
-                {
-                    question: "Nước biển có vị gì?",
-                    options: ["Ngọt", "Mặn", "Chua", "Đắng"],
-                    answer: "B"
-                },
-                {
-                    question: "Con vật nào là biểu tượng của Australia?",
-                    options: ["Gấu túi", "Koala", "Chuột túi", "Kangaroo"],
-                    answer: "D"
-                },
-                {
-                    question: "Đâu là ngôn ngữ lập trình?",
-                    options: ["Word", "Excel", "Python", "Photoshop"],
+                    question: "Trong tư tưởng Hồ Chí Minh, để xây dựng Nhà nước trong sạch vững mạnh, hiệu quả cần phải làm gì? ",
+                    options: ["Tăng cường pháp luật đi đôi với đẩy mạnh giáo dục đạo đức.", "Kiên quyết chống ba thứ “giặc nội xâm” là tham ô, lãng phí, quan liêu.",
+                     "Tăng cường pháp luật đi đôi với đẩy mạnh giáo dục đạo đức; kiên quyết chống ba thứ 'giặc nội xâm' là tham ô, lãng phí, quan liêu.", "Tăng cường pháp luật; kiên quyết chống ba thứ 'giặc nội xâm' là tham ô, lãng phí, quan liêu"],
                     answer: "C"
                 },
                 {
-                    question: "Trái đất quay quanh gì?",
-                    options: ["Mặt Trăng", "Mặt Trời", "Sao Hỏa", "Sao Kim"],
+                    question: "“Mỗi kẻ địch bên trong là một bạn đồng minh của kẻ địch bên ngoài. Địch bên ngoài không đáng sợ. Địch bên trong đáng sợ hơn vì nó phá từ trong phá ra. Vì vậy, ta phải ra sức để phòng những kẻ địch đó, phải chữa hết những bệnh đó.” Câu nói trên của Chủ tịch Hồ Chí Minh được dẫn từ tác phẩm nào của Người dưới đây? ",
+                    options: ["Diễn văn khai mạc Đại hội Đại biểu toàn quốc lần thứ III của Đảng Lao động Việt Nam (9/1960)", "Nâng cao đạo đức cách mạng, quét sạch chủ nghĩa cá nhân (3/2/1969)",
+                     "Bài nói ở lớp huấn luyện đảng viên mới (5/1966)", "Sửa đổi lối làm việc (10/1947)."],
+                    answer: "D"
+                },
+                {
+                    question: "Nguyên tắc xây dựng đạo đức mới theo tư tưởng Hồ Chí Minh là gì?",
+                    options: ["Nói đi đôi với làm, phải nêu gương về đạo đức", "Phải tu dưỡng đạo đức suốt đời, kiên trì, bền bỉ hằng ngày", "Xây đi đôi với chống", "Cả 3 phương án đều đúng"],
+                    answer: "D"
+                },
+                {
+                    question: "Theo tư tưởng HCM, để phát huy động lực con người, cần phải?",
+                    options: ["Phát huy sức mạnh của cả cộng đồng dân tộc và sức mạnh của cá nhân người lao động", "Phát huy sức mạnh đoàn kết của cả cộng đồng dân tộc",
+                     "Phát huy sức mạnh của cá nhân con người", "Kêu gọi toàn dân"],
+                    answer: "A"
+                },
+                {
+                    question: "Luận điểm nào sau đây là sai? Theo tư tưởng Hồ Chí Minh, Đảng lãnh đạo Nhà nước bằng:",
+                    options: ["Đường lối, chủ trương, chính sách", "Qua các tổ chức đảng và đảng viên của mình trong bộ máy Nhà nước",
+                     "Hiến pháp và pháp luật", "Công tác kiểm tra"],
+                    answer: "C"
+                },
+                {
+                    question: "Hồ Chí Minh từng khẳng định: “Đảng ta là đạo đức, là văn minh”, câu nói này phản ánh đặc trưng nào của Đảng?",
+                    options: ["Tính đại chúng", "Tính chiến đấu", "Tính cách mạng và nhân văn", "Tính kỷ luật"],
+                    answer: "C"
+                },
+                {
+                    question: "Trong tư tưởng Hồ Chí Minh, đạo đức cách mạng được thể hiện ở nội dung cốt lõi nào sau đây?",
+                    options: ["Trung với nước, hiếu với dân", "Tuyệt đối trung thành với Đảng",
+                     "Cần, kiệm, liêm, chính, chí công vô tư", "Có lập trường giai cấp vững vàng"],
+                    answer: "C"
+                },
+                {
+                    question: "Hồ Chí Minh cho rằng mục tiêu cao nhất của văn hóa là gì?",
+                    options: ["Phục vụ giai cấp công nhân", "Làm cho con người phát triển toàn diện", "Đấu tranh chống chủ nghĩa cá nhân", "Xây dựng xã hội chủ nghĩa"],
+                    answer: "B"
+                },
+                {
+                    question: "Tư tưởng Hồ Chí Minh về con người nhấn mạnh yếu tố nào?",
+                    options: ["Con người sinh học", "Con người chính trị", "Con người vừa là mục tiêu, vừa là động lực của cách mạng", "Con người cá nhân trong xã hội"],
+                    answer: "C"
+                },
+                {
+                    question: "Theo Hồ Chí Minh, muốn xây dựng văn hóa mới cần bắt đầu từ đâu?",
+                    options: ["Cải cách thể chế chính trị", "Phát triển kinh tế bền vững", "Thay đổi mô hình giáo dục", "Cải tạo con người và xã hội"],
+                    answer: "D"
+                },
+                {
+                    question: "Hồ Chí Minh xác định vai trò của văn hóa trong sự nghiệp cách mạng là:",
+                    options: ["Công cụ tuyên truyền chính trị", "Động lực phát triển xã hội", "Phương tiện giáo dục đạo đức", "Nguồn lực xây dựng chính quyền"],
                     answer: "B"
                 }
             ];
