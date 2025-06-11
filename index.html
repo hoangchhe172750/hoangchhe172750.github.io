@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trò Chơi Lật Mảnh Ghép</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Quicksand', sans-serif;
+            background: linear-gradient(135deg, #8BC6EC 0%, #9599E2 100%);
+            min-height: 100vh;
+        }
+        
+        .puzzle-piece {
+            transition: all 0.3s ease;
+            cursor: pointer;
+            background-color: #5b6bd1;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .puzzle-piece:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        .puzzle-piece.flipped {
+            transform: rotateY(180deg);
+            pointer-events: none;
+            background-color: transparent;
+            box-shadow: none;
+            color: transparent; /* Hide the number when flipped */
+        }
+        
+        .modal {
+            transition: opacity 0.3s ease;
+        }
+        
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: #f00;
+            border-radius: 50%;
+            animation: fall 3s ease-in infinite;
+        }
+        
+        @keyframes fall {
+            0% {
+                transform: translateY(-100px) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body class="p-4">
+    <div class="max-w-4xl mx-auto">
+        <div class="bg-white rounded-xl shadow-lg p-6 mb-6">
+            <h1 class="text-3xl font-bold text-center text-indigo-700 mb-2">Trò Chơi Lật Mảnh Ghép</h1>
+            <p class="text-center text-gray-600 mb-4">Trả lời câu hỏi để lật mảnh ghép và đoán bức ảnh bị che!</p>
+            
+            <div class="flex justify-between items-center mb-4">
+                <div class="text-lg font-medium">
+                    <span class="text-indigo-600">Đã lật: </span>
+                    <span id="flipped-count" class="font-bold">0</span>/12
+                </div>
+                <button id="reset-btn" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg transition">
+                    Chơi lại
+                </button>
+            </div>
+            
+            <div class="relative w-full aspect-[4/3] mb-6">
+                <!-- Hidden image -->
+                <div class="absolute inset-0 flex items-center justify-center">
+                    <svg class="w-full h-full" viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Beautiful landscape SVG -->
+                        <rect width="400" height="300" fill="#87CEEB" />
+                        <!-- Sky -->
+                        <rect y="200" width="400" height="100" fill="#228B22" />
+                        <!-- Grass -->
+                        <circle cx="320" cy="80" r="40" fill="#FFD700" />
+                        <!-- Sun -->
+                        <!-- Mountains -->
+                        <polygon points="0,200 100,100 200,180 300,90 400,200" fill="#A0522D" />
+                        <!-- Trees -->
+                        <circle cx="50" cy="180" r="20" fill="#006400" />
+                        <rect x="45" y="180" width="10" height="20" fill="#8B4513" />
+                        <circle cx="150" cy="190" r="15" fill="#006400" />
+                        <rect x="147" y="190" width="6" height="15" fill="#8B4513" />
+                        <circle cx="350" cy="170" r="25" fill="#006400" />
+                        <rect x="345" y="170" width="10" height="30" fill="#8B4513" />
+                        <!-- House -->
+                        <rect x="220" y="150" width="60" height="50" fill="#CD853F" />
+                        <polygon points="220,150 250,120 280,150" fill="#A52A2A" />
+                        <rect x="240" y="170" width="20" height="30" fill="#8B4513" />
+                        <rect x="230" y="160" width="10" height="10" fill="#87CEEB" />
+                        <rect x="260" y="160" width="10" height="10" fill="#87CEEB" />
+                    </svg>
+                </div>
+                
+                <!-- Puzzle grid -->
+                <div class="absolute inset-0 grid grid-cols-4 grid-rows-3 gap-1">
+                    <div class="puzzle-piece" data-index="0">1</div>
+                    <div class="puzzle-piece" data-index="1">2</div>
+                    <div class="puzzle-piece" data-index="2">3</div>
+                    <div class="puzzle-piece" data-index="3">4</div>
+                    <div class="puzzle-piece" data-index="4">5</div>
+                    <div class="puzzle-piece" data-index="5">6</div>
+                    <div class="puzzle-piece" data-index="6">7</div>
+                    <div class="puzzle-piece" data-index="7">8</div>
+                    <div class="puzzle-piece" data-index="8">9</div>
+                    <div class="puzzle-piece" data-index="9">10</div>
+                    <div class="puzzle-piece" data-index="10">11</div>
+                    <div class="puzzle-piece" data-index="11">12</div>
+                </div>
+            </div>
+            
+            <div class="text-center">
+                <button id="guess-btn" class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg text-lg font-medium transition">
+                    Đoán bức ảnh
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Question Modal -->
+    <div id="question-modal" class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-xl p-6 max-w-md w-full mx-4">
+            <h2 class="text-2xl font-bold text-center text-indigo-700 mb-4">Câu hỏi</h2>
+            <p id="question-text" class="text-lg mb-6 text-center">Câu hỏi sẽ xuất hiện ở đây</p>
+            
+            <div class="space-y-3 mb-6">
+                <div class="flex items-center">
+                    <input type="radio" id="answer-a" name="answer" value="A" class="mr-2">
+                    <label for="answer-a" id="label-a" class="text-gray-700">Đáp án A</label>
+                </div>
+                <div class="flex items-center">
+                    <input type="radio" id="answer-b" name="answer" value="B" class="mr-2">
+                    <label for="answer-b" id="label-b" class="text-gray-700">Đáp án B</label>
+                </div>
+                <div class="flex items-center">
+                    <input type="radio" id="answer-c" name="answer" value="C" class="mr-2">
+                    <label for="answer-c" id="label-c" class="text-gray-700">Đáp án C</label>
+                </div>
+                <div class="flex items-center">
+                    <input type="radio" id="answer-d" name="answer" value="D" class="mr-2">
+                    <label for="answer-d" id="label-d" class="text-gray-700">Đáp án D</label>
+                </div>
+            </div>
+            
+            <div class="flex justify-between">
+                <button id="close-question-btn" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg transition">
+                    Đóng
+                </button>
+                <button id="submit-answer-btn" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg transition">
+                    Trả lời
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Guess Modal -->
+    <div id="guess-modal" class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-xl p-6 max-w-md w-full mx-4">
+            <h2 class="text-2xl font-bold text-center text-indigo-700 mb-4">Đoán bức ảnh</h2>
+            <p class="text-lg mb-6 text-center">Bạn nghĩ đây là bức ảnh gì?</p>
+            
+            <div class="space-y-3 mb-6">
+                <div class="flex items-center">
+                    <input type="radio" id="guess-a" name="guess" value="A" class="mr-2">
+                    <label for="guess-a" class="text-gray-700">Phong cảnh miền quê</label>
+                </div>
+                <div class="flex items-center">
+                    <input type="radio" id="guess-b" name="guess" value="B" class="mr-2">
+                    <label for="guess-b" class="text-gray-700">Bãi biển</label>
+                </div>
+                <div class="flex items-center">
+                    <input type="radio" id="guess-c" name="guess" value="C" class="mr-2">
+                    <label for="guess-c" class="text-gray-700">Thành phố</label>
+                </div>
+                <div class="flex items-center">
+                    <input type="radio" id="guess-d" name="guess" value="D" class="mr-2">
+                    <label for="guess-d" class="text-gray-700">Núi rừng</label>
+                </div>
+            </div>
+            
+            <div class="flex justify-between">
+                <button id="close-guess-btn" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg transition">
+                    Đóng
+                </button>
+                <button id="submit-guess-btn" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg transition">
+                    Đoán
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Result Modal -->
+    <div id="result-modal" class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-xl p-6 max-w-md w-full mx-4">
+            <h2 id="result-title" class="text-2xl font-bold text-center mb-4">Kết quả</h2>
+            <p id="result-message" class="text-lg mb-6 text-center">Kết quả sẽ xuất hiện ở đây</p>
+            
+            <div class="text-center">
+                <button id="close-result-btn" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-lg transition">
+                    Đóng
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const questions = [
+                {
+                    question: "Thủ đô của Việt Nam là gì?",
+                    options: ["Hồ Chí Minh", "Hà Nội", "Đà Nẵng", "Huế"],
+                    answer: "B"
+                },
+                {
+                    question: "1 + 1 = ?",
+                    options: ["1", "2", "3", "4"],
+                    answer: "B"
+                },
+                {
+                    question: "Nước nào có diện tích lớn nhất thế giới?",
+                    options: ["Mỹ", "Trung Quốc", "Nga", "Canada"],
+                    answer: "C"
+                },
+                {
+                    question: "Hành tinh nào gần Mặt Trời nhất?",
+                    options: ["Trái Đất", "Sao Thủy", "Sao Kim", "Sao Hỏa"],
+                    answer: "B"
+                },
+                {
+                    question: "Ai là tác giả của 'Truyện Kiều'?",
+                    options: ["Nguyễn Du", "Hồ Xuân Hương", "Nguyễn Trãi", "Nguyễn Đình Chiểu"],
+                    answer: "A"
+                },
+                {
+                    question: "Năm bao nhiêu Việt Nam giành độc lập?",
+                    options: ["1945", "1954", "1975", "1986"],
+                    answer: "A"
+                },
+                {
+                    question: "Đâu không phải là một loại trái cây?",
+                    options: ["Táo", "Cà rốt", "Cam", "Dưa hấu"],
+                    answer: "B"
+                },
+                {
+                    question: "Đâu là số nguyên tố?",
+                    options: ["4", "6", "9", "11"],
+                    answer: "D"
+                },
+                {
+                    question: "Nước biển có vị gì?",
+                    options: ["Ngọt", "Mặn", "Chua", "Đắng"],
+                    answer: "B"
+                },
+                {
+                    question: "Con vật nào là biểu tượng của Australia?",
+                    options: ["Gấu túi", "Koala", "Chuột túi", "Kangaroo"],
+                    answer: "D"
+                },
+                {
+                    question: "Đâu là ngôn ngữ lập trình?",
+                    options: ["Word", "Excel", "Python", "Photoshop"],
+                    answer: "C"
+                },
+                {
+                    question: "Trái đất quay quanh gì?",
+                    options: ["Mặt Trăng", "Mặt Trời", "Sao Hỏa", "Sao Kim"],
+                    answer: "B"
+                }
+            ];
+            
+            const puzzlePieces = document.querySelectorAll('.puzzle-piece');
+            const questionModal = document.getElementById('question-modal');
+            const guessModal = document.getElementById('guess-modal');
+            const resultModal = document.getElementById('result-modal');
+            const questionText = document.getElementById('question-text');
+            const labelA = document.getElementById('label-a');
+            const labelB = document.getElementById('label-b');
+            const labelC = document.getElementById('label-c');
+            const labelD = document.getElementById('label-d');
+            const flippedCountElement = document.getElementById('flipped-count');
+            
+            let currentPieceIndex = null;
+            let flippedCount = 0;
+            
+            // Initialize the game
+            function initGame() {
+                puzzlePieces.forEach((piece, index) => {
+                    piece.classList.remove('flipped');
+                    piece.textContent = index + 1; // Reset the numbers
+                });
+                flippedCount = 0;
+                flippedCountElement.textContent = flippedCount;
+            }
+            
+            // Event listeners for puzzle pieces
+            puzzlePieces.forEach(piece => {
+                piece.addEventListener('click', function() {
+                    if (!piece.classList.contains('flipped')) {
+                        currentPieceIndex = parseInt(piece.dataset.index);
+                        showQuestion(currentPieceIndex);
+                    }
+                });
+            });
+            
+            // Show question modal
+            function showQuestion(index) {
+                const question = questions[index];
+                questionText.textContent = question.question;
+                labelA.textContent = question.options[0];
+                labelB.textContent = question.options[1];
+                labelC.textContent = question.options[2];
+                labelD.textContent = question.options[3];
+                
+                // Clear previous selection
+                document.querySelectorAll('input[name="answer"]').forEach(input => {
+                    input.checked = false;
+                });
+                
+                questionModal.classList.remove('hidden');
+            }
+            
+            // Close question modal
+            document.getElementById('close-question-btn').addEventListener('click', function() {
+                questionModal.classList.add('hidden');
+                currentPieceIndex = null;
+            });
+            
+            // Submit answer
+            document.getElementById('submit-answer-btn').addEventListener('click', function() {
+                const selectedAnswer = document.querySelector('input[name="answer"]:checked');
+                
+                if (!selectedAnswer) {
+                    alert('Vui lòng chọn một đáp án!');
+                    return;
+                }
+                
+                const userAnswer = selectedAnswer.value;
+                const correctAnswer = questions[currentPieceIndex].answer;
+                
+                if (userAnswer === correctAnswer) {
+                    // Correct answer
+                    puzzlePieces[currentPieceIndex].classList.add('flipped');
+                    // Clear the number text when flipped
+                    puzzlePieces[currentPieceIndex].textContent = '';
+                    
+                    flippedCount++;
+                    flippedCountElement.textContent = flippedCount;
+                    
+                    // Check if all pieces are flipped
+                    if (flippedCount === puzzlePieces.length) {
+                        setTimeout(() => {
+                            showResultModal('Chúc mừng!', 'Bạn đã lật hết tất cả các mảnh ghép! Hãy đoán bức ảnh là gì.');
+                            createConfetti();
+                        }, 500);
+                    }
+                } else {
+                    // Wrong answer
+                    showResultModal('Sai rồi!', 'Đáp án đúng là: ' + correctAnswer);
+                }
+                
+                questionModal.classList.add('hidden');
+                currentPieceIndex = null;
+            });
+            
+            // Guess button
+            document.getElementById('guess-btn').addEventListener('click', function() {
+                guessModal.classList.remove('hidden');
+            });
+            
+            // Close guess modal
+            document.getElementById('close-guess-btn').addEventListener('click', function() {
+                guessModal.classList.add('hidden');
+            });
+            
+            // Submit guess
+            document.getElementById('submit-guess-btn').addEventListener('click', function() {
+                const selectedGuess = document.querySelector('input[name="guess"]:checked');
+                
+                if (!selectedGuess) {
+                    alert('Vui lòng chọn một đáp án!');
+                    return;
+                }
+                
+                const userGuess = selectedGuess.value;
+                const correctGuess = 'A'; // Phong cảnh miền quê
+                
+                if (userGuess === correctGuess) {
+                    showResultModal('Chính xác!', 'Bạn đã đoán đúng bức ảnh. Đó là phong cảnh miền quê!');
+                    createConfetti();
+                    
+                    // Flip all remaining pieces and clear their numbers
+                    puzzlePieces.forEach(piece => {
+                        if (!piece.classList.contains('flipped')) {
+                            piece.classList.add('flipped');
+                            piece.textContent = '';
+                        }
+                    });
+                    
+                    flippedCount = puzzlePieces.length;
+                    flippedCountElement.textContent = flippedCount;
+                } else {
+                    showResultModal('Sai rồi!', 'Đáp án đúng là: Phong cảnh miền quê');
+                }
+                
+                guessModal.classList.add('hidden');
+            });
+            
+            // Show result modal
+            function showResultModal(title, message) {
+                document.getElementById('result-title').textContent = title;
+                document.getElementById('result-message').textContent = message;
+                resultModal.classList.remove('hidden');
+            }
+            
+            // Close result modal
+            document.getElementById('close-result-btn').addEventListener('click', function() {
+                resultModal.classList.add('hidden');
+            });
+            
+            // Reset game
+            document.getElementById('reset-btn').addEventListener('click', function() {
+                initGame();
+            });
+            
+            // Create confetti effect
+            function createConfetti() {
+                const colors = ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff'];
+                
+                for (let i = 0; i < 50; i++) {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.left = Math.random() * 100 + 'vw';
+                    confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                    document.body.appendChild(confetti);
+                    
+                    // Remove confetti after animation
+                    setTimeout(() => {
+                        confetti.remove();
+                    }, 5000);
+                }
+            }
+            
+            // Initialize the game
+            initGame();
+        });
+    </script>
+</body>
+</html>
