@@ -65,6 +65,35 @@
                 opacity: 0;
             }
         }
+
+        .puzzle-piece.wrong {
+            background-color: #ef4444 !important;
+            /* đỏ Tailwind */
+            color: white !important;
+            animation: shake 0.3s;
+        }
+
+        @keyframes shake {
+            0% {
+                transform: translateX(0);
+            }
+
+            25% {
+                transform: translateX(-5px);
+            }
+
+            50% {
+                transform: translateX(5px);
+            }
+
+            75% {
+                transform: translateX(-5px);
+            }
+
+            100% {
+                transform: translateX(0);
+            }
+        }
     </style>
 </head>
 
@@ -88,7 +117,7 @@
             <div class="relative w-full aspect-[4/3] mb-6">
                 <!-- Hidden image -->
                 <div class="absolute inset-0 flex items-center justify-center">
-                    <img src="bg.jpg" alt="Hidden Image" class="w-full h-full object-cover rounded-xl" />
+                    <img id="hidden-image" src="bg3.png" alt="Hidden Image" class="w-full h-full object-cover rounded-xl" />
                 </div>
 
                 <!-- Puzzle grid -->
@@ -356,12 +385,17 @@
                     // Correct answer
                     showResultModal('Chính xác!', 'Bạn đã trả lời đúng câu hỏi!');
                     puzzlePieces[currentPieceIndex].classList.add('flipped');
+                    puzzlePieces[currentPieceIndex].classList.remove('wrong');
                     // Clear the number text when flipped
                     puzzlePieces[currentPieceIndex].textContent = '';
 
                     flippedCount++;
                     flippedCountElement.textContent = flippedCount;
 
+                    // Đổi ảnh khi đủ 8 mảnh ghép được lật
+                    if (flippedCount === 8) {
+                        document.getElementById('hidden-image').src = 'bg.jpg';
+                    }
                     // Check if all pieces are flipped
                     if (flippedCount === puzzlePieces.length) {
                         setTimeout(() => {
@@ -371,6 +405,7 @@
                     }
                 } else {
                     // Wrong answer
+                    puzzlePieces[currentPieceIndex].classList.add('wrong');
                     showResultModal('Sai rồi!', 'Chúc bạn may mắn lần sau');
                 }
 
