@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,13 +8,13 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap');
-        
+
         body {
             font-family: 'Quicksand', sans-serif;
             background: linear-gradient(135deg, #8BC6EC 0%, #9599E2 100%);
             min-height: 100vh;
         }
-        
+
         .puzzle-piece {
             transition: all 0.3s ease;
             cursor: pointer;
@@ -25,24 +26,25 @@
             font-weight: bold;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
-        
+
         .puzzle-piece:hover {
             transform: translateY(-5px);
             box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
         }
-        
+
         .puzzle-piece.flipped {
             transform: rotateY(180deg);
             pointer-events: none;
             background-color: transparent;
             box-shadow: none;
-            color: transparent; /* Hide the number when flipped */
+            color: transparent;
+            /* Hide the number when flipped */
         }
-        
+
         .modal {
             transition: opacity 0.3s ease;
         }
-        
+
         .confetti {
             position: absolute;
             width: 10px;
@@ -51,12 +53,13 @@
             border-radius: 50%;
             animation: fall 3s ease-in infinite;
         }
-        
+
         @keyframes fall {
             0% {
                 transform: translateY(-100px) rotate(0deg);
                 opacity: 1;
             }
+
             100% {
                 transform: translateY(100vh) rotate(360deg);
                 opacity: 0;
@@ -64,22 +67,24 @@
         }
     </style>
 </head>
+
 <body class="p-4">
     <div class="max-w-4xl mx-auto">
         <div class="bg-white rounded-xl shadow-lg p-6 mb-6">
             <h1 class="text-3xl font-bold text-center text-indigo-700 mb-2">Trò Chơi Lật Mảnh Ghép</h1>
             <p class="text-center text-gray-600 mb-4">Trả lời câu hỏi để lật mảnh ghép và đoán bức ảnh bị che!</p>
-            
+
             <div class="flex justify-between items-center mb-4">
                 <div class="text-lg font-medium">
                     <span class="text-indigo-600">Đã lật: </span>
                     <span id="flipped-count" class="font-bold">0</span>/12
                 </div>
-                <button id="reset-btn" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg transition">
+                <button id="reset-btn"
+                    class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg transition">
                     Chơi lại
                 </button>
             </div>
-            
+
             <div class="relative w-full aspect-[4/3] mb-6">
                 <!-- Hidden image -->
                 <div class="absolute inset-0 flex items-center justify-center">
@@ -108,7 +113,7 @@
                         <rect x="260" y="160" width="10" height="10" fill="#87CEEB" />
                     </svg>
                 </div>
-                
+
                 <!-- Puzzle grid -->
                 <div class="absolute inset-0 grid grid-cols-4 grid-rows-3 gap-1">
                     <div class="puzzle-piece" data-index="0">1</div>
@@ -125,57 +130,64 @@
                     <div class="puzzle-piece" data-index="11">12</div>
                 </div>
             </div>
-            
+
             <div class="text-center">
-                <button id="guess-btn" class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg text-lg font-medium transition">
+                <button id="guess-btn"
+                    class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg text-lg font-medium transition">
                     Đoán bức ảnh
                 </button>
             </div>
         </div>
     </div>
-    
+
     <!-- Question Modal -->
-    <div id="question-modal" class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
-        <div class="bg-white rounded-xl p-6 max-w-md w-full mx-4">
+    <div id="question-modal"
+        class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-xl p-8 max-w-lg w-full mx-4"> <!-- Sửa p-6 thành p-8, max-w-md thành max-w-lg -->
             <h2 class="text-2xl font-bold text-center text-indigo-700 mb-4">Câu hỏi</h2>
-            <p id="question-text" class="text-lg mb-6 text-center">Câu hỏi sẽ xuất hiện ở đây</p>
-            
-            <div class="space-y-3 mb-6">
+            <p id="question-text" class="text-xl mb-6 text-center">Câu hỏi sẽ xuất hiện ở đây</p>
+            <!-- text-lg thành text-xl -->
+
+            <div class="space-y-4 mb-8"> <!-- space-y-3 thành space-y-4, mb-6 thành mb-8 -->
                 <div class="flex items-center">
                     <input type="radio" id="answer-a" name="answer" value="A" class="mr-2">
-                    <label for="answer-a" id="label-a" class="text-gray-700">Đáp án A</label>
+                    <label for="answer-a" id="label-a" class="text-lg text-gray-700">Đáp án A</label>
+                    <!-- text-gray-700 thêm text-lg -->
                 </div>
                 <div class="flex items-center">
                     <input type="radio" id="answer-b" name="answer" value="B" class="mr-2">
-                    <label for="answer-b" id="label-b" class="text-gray-700">Đáp án B</label>
+                    <label for="answer-b" id="label-b" class="text-lg text-gray-700">Đáp án B</label>
                 </div>
                 <div class="flex items-center">
                     <input type="radio" id="answer-c" name="answer" value="C" class="mr-2">
-                    <label for="answer-c" id="label-c" class="text-gray-700">Đáp án C</label>
+                    <label for="answer-c" id="label-c" class="text-lg text-gray-700">Đáp án C</label>
                 </div>
                 <div class="flex items-center">
                     <input type="radio" id="answer-d" name="answer" value="D" class="mr-2">
-                    <label for="answer-d" id="label-d" class="text-gray-700">Đáp án D</label>
+                    <label for="answer-d" id="label-d" class="text-lg text-gray-700">Đáp án D</label>
                 </div>
             </div>
-            
+
             <div class="flex justify-between">
-                <button id="close-question-btn" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg transition">
+                <button id="close-question-btn"
+                    class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg transition">
                     Đóng
                 </button>
-                <button id="submit-answer-btn" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg transition">
+                <button id="submit-answer-btn"
+                    class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg transition">
                     Trả lời
                 </button>
             </div>
         </div>
     </div>
-    
+
     <!-- Guess Modal -->
-    <div id="guess-modal" class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+    <div id="guess-modal"
+        class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
         <div class="bg-white rounded-xl p-6 max-w-md w-full mx-4">
             <h2 class="text-2xl font-bold text-center text-indigo-700 mb-4">Đoán bức ảnh</h2>
             <p class="text-lg mb-6 text-center">Bạn nghĩ đây là bức ảnh gì?</p>
-            
+
             <div class="space-y-3 mb-6">
                 <div class="flex items-center">
                     <input type="radio" id="guess-a" name="guess" value="A" class="mr-2">
@@ -194,34 +206,38 @@
                     <label for="guess-d" class="text-gray-700">Núi rừng</label>
                 </div>
             </div>
-            
+
             <div class="flex justify-between">
-                <button id="close-guess-btn" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg transition">
+                <button id="close-guess-btn"
+                    class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg transition">
                     Đóng
                 </button>
-                <button id="submit-guess-btn" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg transition">
+                <button id="submit-guess-btn"
+                    class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg transition">
                     Đoán
                 </button>
             </div>
         </div>
     </div>
-    
+
     <!-- Result Modal -->
-    <div id="result-modal" class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+    <div id="result-modal"
+        class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
         <div class="bg-white rounded-xl p-6 max-w-md w-full mx-4">
             <h2 id="result-title" class="text-2xl font-bold text-center mb-4">Kết quả</h2>
             <p id="result-message" class="text-lg mb-6 text-center">Kết quả sẽ xuất hiện ở đây</p>
-            
+
             <div class="text-center">
-                <button id="close-result-btn" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-lg transition">
+                <button id="close-result-btn"
+                    class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-lg transition">
                     Đóng
                 </button>
             </div>
         </div>
     </div>
-    
+
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             const questions = [
                 {
                     question: "Theo chủ tịch hồ chí minh , Đảng ta là một đảng cầm quyền , mỗi đảng viên và cán bộ phải thật sự thấm nhuần đạo đức gì ?",
@@ -231,13 +247,13 @@
                 {
                     question: "Trong tư tưởng Hồ Chí Minh, để xây dựng Nhà nước trong sạch vững mạnh, hiệu quả cần phải làm gì? ",
                     options: ["Tăng cường pháp luật đi đôi với đẩy mạnh giáo dục đạo đức.", "Kiên quyết chống ba thứ “giặc nội xâm” là tham ô, lãng phí, quan liêu.",
-                     "Tăng cường pháp luật đi đôi với đẩy mạnh giáo dục đạo đức; kiên quyết chống ba thứ 'giặc nội xâm' là tham ô, lãng phí, quan liêu.", "Tăng cường pháp luật; kiên quyết chống ba thứ 'giặc nội xâm' là tham ô, lãng phí, quan liêu"],
+                        "Tăng cường pháp luật đi đôi với đẩy mạnh giáo dục đạo đức; kiên quyết chống ba thứ 'giặc nội xâm' là tham ô, lãng phí, quan liêu.", "Tăng cường pháp luật; kiên quyết chống ba thứ 'giặc nội xâm' là tham ô, lãng phí, quan liêu"],
                     answer: "C"
                 },
                 {
                     question: "“Mỗi kẻ địch bên trong là một bạn đồng minh của kẻ địch bên ngoài. Địch bên ngoài không đáng sợ. Địch bên trong đáng sợ hơn vì nó phá từ trong phá ra. Vì vậy, ta phải ra sức để phòng những kẻ địch đó, phải chữa hết những bệnh đó.” Câu nói trên của Chủ tịch Hồ Chí Minh được dẫn từ tác phẩm nào của Người dưới đây? ",
                     options: ["Diễn văn khai mạc Đại hội Đại biểu toàn quốc lần thứ III của Đảng Lao động Việt Nam (9/1960)", "Nâng cao đạo đức cách mạng, quét sạch chủ nghĩa cá nhân (3/2/1969)",
-                     "Bài nói ở lớp huấn luyện đảng viên mới (5/1966)", "Sửa đổi lối làm việc (10/1947)."],
+                        "Bài nói ở lớp huấn luyện đảng viên mới (5/1966)", "Sửa đổi lối làm việc (10/1947)."],
                     answer: "D"
                 },
                 {
@@ -248,13 +264,13 @@
                 {
                     question: "Theo tư tưởng HCM, để phát huy động lực con người, cần phải?",
                     options: ["Phát huy sức mạnh của cả cộng đồng dân tộc và sức mạnh của cá nhân người lao động", "Phát huy sức mạnh đoàn kết của cả cộng đồng dân tộc",
-                     "Phát huy sức mạnh của cá nhân con người", "Kêu gọi toàn dân"],
+                        "Phát huy sức mạnh của cá nhân con người", "Kêu gọi toàn dân"],
                     answer: "A"
                 },
                 {
                     question: "Luận điểm nào sau đây là sai? Theo tư tưởng Hồ Chí Minh, Đảng lãnh đạo Nhà nước bằng:",
                     options: ["Đường lối, chủ trương, chính sách", "Qua các tổ chức đảng và đảng viên của mình trong bộ máy Nhà nước",
-                     "Hiến pháp và pháp luật", "Công tác kiểm tra"],
+                        "Hiến pháp và pháp luật", "Công tác kiểm tra"],
                     answer: "C"
                 },
                 {
@@ -265,7 +281,7 @@
                 {
                     question: "Trong tư tưởng Hồ Chí Minh, đạo đức cách mạng được thể hiện ở nội dung cốt lõi nào sau đây?",
                     options: ["Trung với nước, hiếu với dân", "Tuyệt đối trung thành với Đảng",
-                     "Cần, kiệm, liêm, chính, chí công vô tư", "Có lập trường giai cấp vững vàng"],
+                        "Cần, kiệm, liêm, chính, chí công vô tư", "Có lập trường giai cấp vững vàng"],
                     answer: "C"
                 },
                 {
@@ -289,7 +305,7 @@
                     answer: "B"
                 }
             ];
-            
+
             const puzzlePieces = document.querySelectorAll('.puzzle-piece');
             const questionModal = document.getElementById('question-modal');
             const guessModal = document.getElementById('guess-modal');
@@ -300,10 +316,10 @@
             const labelC = document.getElementById('label-c');
             const labelD = document.getElementById('label-d');
             const flippedCountElement = document.getElementById('flipped-count');
-            
+
             let currentPieceIndex = null;
             let flippedCount = 0;
-            
+
             // Initialize the game
             function initGame() {
                 puzzlePieces.forEach((piece, index) => {
@@ -313,17 +329,17 @@
                 flippedCount = 0;
                 flippedCountElement.textContent = flippedCount;
             }
-            
+
             // Event listeners for puzzle pieces
             puzzlePieces.forEach(piece => {
-                piece.addEventListener('click', function() {
+                piece.addEventListener('click', function () {
                     if (!piece.classList.contains('flipped')) {
                         currentPieceIndex = parseInt(piece.dataset.index);
                         showQuestion(currentPieceIndex);
                     }
                 });
             });
-            
+
             // Show question modal
             function showQuestion(index) {
                 const question = questions[index];
@@ -332,42 +348,43 @@
                 labelB.textContent = question.options[1];
                 labelC.textContent = question.options[2];
                 labelD.textContent = question.options[3];
-                
+
                 // Clear previous selection
                 document.querySelectorAll('input[name="answer"]').forEach(input => {
                     input.checked = false;
                 });
-                
+
                 questionModal.classList.remove('hidden');
             }
-            
+
             // Close question modal
-            document.getElementById('close-question-btn').addEventListener('click', function() {
+            document.getElementById('close-question-btn').addEventListener('click', function () {
                 questionModal.classList.add('hidden');
                 currentPieceIndex = null;
             });
-            
+
             // Submit answer
-            document.getElementById('submit-answer-btn').addEventListener('click', function() {
+            document.getElementById('submit-answer-btn').addEventListener('click', function () {
                 const selectedAnswer = document.querySelector('input[name="answer"]:checked');
-                
+
                 if (!selectedAnswer) {
                     alert('Vui lòng chọn một đáp án!');
                     return;
                 }
-                
+
                 const userAnswer = selectedAnswer.value;
                 const correctAnswer = questions[currentPieceIndex].answer;
-                
+
                 if (userAnswer === correctAnswer) {
                     // Correct answer
+                    showResultModal('Chính xác!', 'Bạn đã trả lời đúng câu hỏi!');
                     puzzlePieces[currentPieceIndex].classList.add('flipped');
                     // Clear the number text when flipped
                     puzzlePieces[currentPieceIndex].textContent = '';
-                    
+
                     flippedCount++;
                     flippedCountElement.textContent = flippedCount;
-                    
+
                     // Check if all pieces are flipped
                     if (flippedCount === puzzlePieces.length) {
                         setTimeout(() => {
@@ -377,39 +394,39 @@
                     }
                 } else {
                     // Wrong answer
-                    showResultModal('Sai rồi!', 'Đáp án đúng là: ' + correctAnswer);
+                    showResultModal('Sai rồi!', 'Chúc bạn may mắn lần sau');
                 }
-                
+
                 questionModal.classList.add('hidden');
                 currentPieceIndex = null;
             });
-            
+
             // Guess button
-            document.getElementById('guess-btn').addEventListener('click', function() {
+            document.getElementById('guess-btn').addEventListener('click', function () {
                 guessModal.classList.remove('hidden');
             });
-            
+
             // Close guess modal
-            document.getElementById('close-guess-btn').addEventListener('click', function() {
+            document.getElementById('close-guess-btn').addEventListener('click', function () {
                 guessModal.classList.add('hidden');
             });
-            
+
             // Submit guess
-            document.getElementById('submit-guess-btn').addEventListener('click', function() {
+            document.getElementById('submit-guess-btn').addEventListener('click', function () {
                 const selectedGuess = document.querySelector('input[name="guess"]:checked');
-                
+
                 if (!selectedGuess) {
                     alert('Vui lòng chọn một đáp án!');
                     return;
                 }
-                
+
                 const userGuess = selectedGuess.value;
                 const correctGuess = 'A'; // Phong cảnh miền quê
-                
+
                 if (userGuess === correctGuess) {
                     showResultModal('Chính xác!', 'Bạn đã đoán đúng bức ảnh. Đó là phong cảnh miền quê!');
                     createConfetti();
-                    
+
                     // Flip all remaining pieces and clear their numbers
                     puzzlePieces.forEach(piece => {
                         if (!piece.classList.contains('flipped')) {
@@ -417,37 +434,37 @@
                             piece.textContent = '';
                         }
                     });
-                    
+
                     flippedCount = puzzlePieces.length;
                     flippedCountElement.textContent = flippedCount;
                 } else {
                     showResultModal('Sai rồi!', 'Đáp án đúng là: Phong cảnh miền quê');
                 }
-                
+
                 guessModal.classList.add('hidden');
             });
-            
+
             // Show result modal
             function showResultModal(title, message) {
                 document.getElementById('result-title').textContent = title;
                 document.getElementById('result-message').textContent = message;
                 resultModal.classList.remove('hidden');
             }
-            
+
             // Close result modal
-            document.getElementById('close-result-btn').addEventListener('click', function() {
+            document.getElementById('close-result-btn').addEventListener('click', function () {
                 resultModal.classList.add('hidden');
             });
-            
+
             // Reset game
-            document.getElementById('reset-btn').addEventListener('click', function() {
+            document.getElementById('reset-btn').addEventListener('click', function () {
                 initGame();
             });
-            
+
             // Create confetti effect
             function createConfetti() {
                 const colors = ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff'];
-                
+
                 for (let i = 0; i < 50; i++) {
                     const confetti = document.createElement('div');
                     confetti.className = 'confetti';
@@ -455,17 +472,18 @@
                     confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
                     confetti.style.animationDuration = (Math.random() * 3 + 2) + 's';
                     document.body.appendChild(confetti);
-                    
+
                     // Remove confetti after animation
                     setTimeout(() => {
                         confetti.remove();
                     }, 5000);
                 }
             }
-            
+
             // Initialize the game
             initGame();
         });
     </script>
 </body>
+
 </html>
