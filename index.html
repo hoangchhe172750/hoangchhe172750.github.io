@@ -100,7 +100,7 @@
 <body class="p-4">
     <div class="max-w-4xl mx-auto">
         <div class="bg-white rounded-xl shadow-lg p-6 mb-6">
-            <h1 class="text-3xl font-bold text-center text-indigo-700 mb-2">Trò Chơi Lật Mảnh Ghép</h1>
+            <h1 class="text-3xl font-bold text-center text-indigo-700 mb-2">Vượt chướng ngại vật</h1>
             <p class="text-center text-gray-600 mb-4">Trả lời câu hỏi để lật mảnh ghép và đoán bức ảnh bị che!</p>
 
             <div class="flex justify-between items-center mb-4">
@@ -140,7 +140,7 @@
             <div class="text-center">
                 <button id="guess-btn"
                     class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg text-lg font-medium transition">
-                    Đoán bức ảnh
+                    Kiểm tra
                 </button>
             </div>
         </div>
@@ -191,27 +191,10 @@
     <div id="guess-modal"
         class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
         <div class="bg-white rounded-xl p-6 max-w-md w-full mx-4">
-            <h2 class="text-2xl font-bold text-center text-indigo-700 mb-4">Đoán bức ảnh</h2>
-            <p class="text-lg mb-6 text-center">Bạn nghĩ đây là bức ảnh gì?</p>
-
-            <div class="space-y-3 mb-6">
-                <div class="flex items-center">
-                    <input type="radio" id="guess-a" name="guess" value="A" class="mr-2">
-                    <label for="guess-a" class="text-gray-700">Phong cảnh miền quê</label>
-                </div>
-                <div class="flex items-center">
-                    <input type="radio" id="guess-b" name="guess" value="B" class="mr-2">
-                    <label for="guess-b" class="text-gray-700">Bãi biển</label>
-                </div>
-                <div class="flex items-center">
-                    <input type="radio" id="guess-c" name="guess" value="C" class="mr-2">
-                    <label for="guess-c" class="text-gray-700">Thành phố</label>
-                </div>
-                <div class="flex items-center">
-                    <input type="radio" id="guess-d" name="guess" value="D" class="mr-2">
-                    <label for="guess-d" class="text-gray-700">Núi rừng</label>
-                </div>
-            </div>
+            <h2 class="text-2xl font-bold text-center text-indigo-700 mb-4">Kiểm tra</h2>
+            <p class="text-lg mb-6 text-center">Nhập đáp án của bạn:</p>
+            <input id="guess-input" type="text" class="w-full border border-gray-300 rounded-lg px-4 py-2 mb-6 text-lg"
+                placeholder="Nhập đáp án..." autocomplete="off" />
 
             <div class="flex justify-between">
                 <button id="close-guess-btn"
@@ -220,7 +203,7 @@
                 </button>
                 <button id="submit-guess-btn"
                     class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg transition">
-                    Đoán
+                    Kiểm tra
                 </button>
             </div>
         </div>
@@ -330,6 +313,7 @@
             function initGame() {
                 puzzlePieces.forEach((piece, index) => {
                     piece.classList.remove('flipped');
+                    piece.classList.remove('wrong');
                     piece.textContent = index + 1; // Reset the numbers
                 });
                 flippedCount = 0;
@@ -393,7 +377,10 @@
                     flippedCountElement.textContent = flippedCount;
 
                     // Đổi ảnh khi đủ 8 mảnh ghép được lật
-                    if (flippedCount === 8) {
+                    if (flippedCount === 10) {
+                        document.getElementById('hidden-image').src = 'bg2.png';
+                    }
+                    if (flippedCount === 12) {
                         document.getElementById('hidden-image').src = 'bg.jpg';
                     }
                     // Check if all pieces are flipped
@@ -425,18 +412,17 @@
 
             // Submit guess
             document.getElementById('submit-guess-btn').addEventListener('click', function () {
-                const selectedGuess = document.querySelector('input[name="guess"]:checked');
+                const guessInput = document.getElementById('guess-input');
+                const userGuess = guessInput.value.trim().toLowerCase();
+                const correctGuess = "vì lợi ích mười năm trồng cây vì lợi ích trăm năm trồng người";
 
-                if (!selectedGuess) {
-                    alert('Vui lòng chọn một đáp án!');
+                if (!userGuess) {
+                    alert('Vui lòng nhập đáp án!');
                     return;
                 }
 
-                const userGuess = selectedGuess.value;
-                const correctGuess = 'A'; // Phong cảnh miền quê
-
                 if (userGuess === correctGuess) {
-                    showResultModal('Chính xác!', 'Bạn đã đoán đúng bức ảnh. Đó là phong cảnh miền quê!');
+                    showResultModal('Chính xác!', 'Bạn đã đoán đúng bức ảnh!');
                     createConfetti();
 
                     // Flip all remaining pieces and clear their numbers
@@ -447,13 +433,17 @@
                         }
                     });
 
+                    // Đổi ảnh ẩn thành bg.jpg khi đoán đúng
+                    document.getElementById('hidden-image').src = 'bg.jpg';
+
                     flippedCount = puzzlePieces.length;
                     flippedCountElement.textContent = flippedCount;
                 } else {
-                    showResultModal('Sai rồi!', 'Đáp án đúng là: Phong cảnh miền quê');
+                    showResultModal('Sai rồi!', 'Chúc bạn may mắn lần sau');
                 }
 
                 guessModal.classList.add('hidden');
+                guessInput.value = '';
             });
 
             // Show result modal
